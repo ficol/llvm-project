@@ -26,14 +26,14 @@ def ArgumentAttributesMethods {
         Get the array of argument attribute dictionaries. The method should
         return an array attribute containing only dictionary attributes equal in
         number to the number of arguments. Alternatively, the method can
-        return null to indicate that the region has no argument attributes.
+        return null to indicate that there are no argument attributes.
       }],
       "::mlir::ArrayAttr", "getArgAttrsAttr">,
     InterfaceMethod<[{
         Get the array of result attribute dictionaries. The method should return
         an array attribute containing only dictionary attributes equal in number
         to the number of results. Alternatively, the method can return
-        null to indicate that the region has no result attributes.
+        null to indicate that there are no result attributes.
       }],
       "::mlir::ArrayAttr", "getResAttrsAttr">,
     InterfaceMethod<[{
@@ -123,7 +123,7 @@ def CallOpInterface : OpInterface<"CallOpInterface"> {
         return ::mlir::call_interface_impl::resolveCallable($_op);
       }]
     >
-  ]);
+  ] # ArgumentAttributesMethods.methods;
 }
 
 /// Interface for callable operations.
@@ -155,7 +155,7 @@ def CallableOpInterface : OpInterface<"CallableOpInterface"> {
       allow for this method may be called on function declarations).
     }],
     "::llvm::ArrayRef<::mlir::Type>", "getResultTypes">,
-  ]);
+  ] # ArgumentAttributesMethods.methods;
 }
 
 #endif // MLIR_INTERFACES_CALLINTERFACES

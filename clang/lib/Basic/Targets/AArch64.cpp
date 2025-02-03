@@ -421,7 +421,7 @@ void AArch64TargetInfo::getTargetDefines(const LangOptions &Opts,
 #define ARM_ACLE_VERSION(Y, Q, P) (100 * (Y) + 10 * (Q) + (P))
   Builder.defineMacro("__ARM_ACLE", Twine(ARM_ACLE_VERSION(2024, 2, 0)));
   Builder.defineMacro("__FUNCTION_MULTI_VERSIONING_SUPPORT_LEVEL",
-                      Twine(ARM_ACLE_VERSION(2024, 2, 0)));
+                      Twine(ARM_ACLE_VERSION(2024, 3, 0)));
 #undef ARM_ACLE_VERSION
   Builder.defineMacro("__ARM_ARCH",
                       std::to_string(ArchInfo->Version.getMajor()));
@@ -703,12 +703,13 @@ ArrayRef<Builtin::Info> AArch64TargetInfo::getTargetBuiltins() const {
 }
 
 std::optional<std::pair<unsigned, unsigned>>
-AArch64TargetInfo::getVScaleRange(const LangOptions &LangOpts) const {
+AArch64TargetInfo::getVScaleRange(const LangOptions &LangOpts,
+                                  bool IsArmStreamingFunction) const {
   if (LangOpts.VScaleMin || LangOpts.VScaleMax)
     return std::pair<unsigned, unsigned>(
         LangOpts.VScaleMin ? LangOpts.VScaleMin : 1, LangOpts.VScaleMax);
 
-  if (hasFeature("sve"))
+  if (hasFeature("sve") || (IsArmStreamingFunction && hasFeature("sme")))
     return std::pair<unsigned, unsigned>(1, 16);
 
   return std::nullopt;
